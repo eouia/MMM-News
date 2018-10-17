@@ -2,6 +2,19 @@
 MagicMirror module - displaying news articles with News.org API V2
 
 ## Screenshot
+- `type:horizontal`, `touchable:true`
+![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc3.png)
+
+- `type:vertical`, `touchable:false`
+![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc4.png)
+
+- detail page is opened
+![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc5.png)
+
+- Control by Telegram
+![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc6.png)
+
+
 
 ## Features
 - Aggregate headlines from multiple sources at once.
