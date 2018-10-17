@@ -1,6 +1,16 @@
 # MMM-News
 MagicMirror module - displaying news articles with News.org API V2
 
+
+## Features
+- Aggregate headlines from multiple sources at once.
+- Country specific, Category specific, Keyword specific news could be aggregated.
+- Touchable (Clickable) UI supported
+- Can open article page in iFrame and scrollable by touch or autoScroll
+- Controllable by notification
+- Controllable by MMM-TelegramBot
+- Customizable with Template
+
 ## Screenshot
 - `type:horizontal`, `touchable:true`
 ![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc3.png)
@@ -15,15 +25,6 @@ MagicMirror module - displaying news articles with News.org API V2
 ![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc6.png)
 
 
-
-## Features
-- Aggregate headlines from multiple sources at once.
-- Country specific, Category specific, Keyword specific news could be aggregated.
-- Touchable (Clickable) UI supported
-- Can open article page in iFrame and scrollable by touch or autoScroll
-- Controllable by notification
-- Controllable by MMM-TelegramBot
-- Customizable with Template
 
 ## Installation
 ```javascript
