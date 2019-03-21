@@ -133,12 +133,14 @@ https://newsapi.org/
 ## Readability
 Now MMM-News can show article detail with `READER MODE`. Detailed article will be shown without Adv, menu or any other annoying site things.
 ![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc7.png)
+
+
 But some articles cannot be shown as Reader mode. You can set exception with `readabilityExcepts`.
 ```js
 readabilityExcepts: ["usatoday", "cnn.com", "wkrg"], //particle of URL pattern for exception
 
 ```
-
+CSS is defined in `readermode.css`. You can redefine it in your `css/custom.css`.
 
 
 ## Template
