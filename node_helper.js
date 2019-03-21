@@ -2,6 +2,9 @@ const request = require("request")
 const moment = require("moment")
 const querystring = require("querystring")
 const bodyParser = require("body-parser")
+const readability = require("./readability/Readability.js")
+const jsdom = require("jsdom")
+const { JSDOM } = jsdom
 
 var NodeHelper = require("node_helper")
 
@@ -60,11 +63,45 @@ module.exports = NodeHelper.create({
   },
 
   prepareURL: function(url) {
-    request(url, (error, response, body)=> {
+    var isExceptReadability = (u)=>{
+      var isExcept = this.config.readabilityExcepts.some((pattern)=>{
+        var r = u.search(pattern)
+        return (r >= 0) ? true : false
+      })
+      return isExcept
+    }
+    request({url: url, method: "GET"}, (error, response, body)=> {
       if (error) {
         console.log("[NEWS] Cannot open URL :", url)
       } else {
-        this.detail = body
+        //this.detail = body
+        var doc = new JSDOM(body)
+        var article = new readability(doc.window.document).parse()
+        var readmode = isExceptReadability(url)
+        if (article && !readmode) {
+          var pattern = /<a[^>]*>|<\/a>/ig
+          article.content = article.content.replace(pattern, "")
+
+          this.detail = `
+            <html>
+            <head>
+            <link rel="stylesheet" type="text/css" href="/modules/MMM-News/readermode.css">
+            </head>
+            <body>
+            <h1 class="readable_header">${article.title}</h1>
+            <div class="readable_content">
+              ${article.content}
+              <div>
+                -- End of article --
+              </div>
+            </div>
+            </body>
+            </html>
+          `
+        } else {
+          this.detail = body
+        }
+
         this.serveDetail()
       }
     })
@@ -77,7 +114,6 @@ module.exports = NodeHelper.create({
       var html = this.detail
       res.status(200).send(html)
     })
-
     this.sendSocketNotification("READY_DETAIL", "/news_detail")
   },
 

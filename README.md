@@ -25,11 +25,23 @@ MagicMirror module - displaying news articles with News.org API V2
 ![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc6.png)
 
 
+## UPDATE
+**2.0.0**
+- Added : Reader mode
+- You need to re-install to update. or
+```
+cd ~/MagicMirror/modules/MMM-News
+git pull
+npm install
+```
+
 
 ## Installation
 ```javascript
 cd ~/MagicMirror/modules/
 git clone https://github.com/eouia/MMM-News
+cd MMM-News
+npm install
 ```
 
 ## Get `newsapi.org` API Key
@@ -99,6 +111,7 @@ https://newsapi.org/
     touchable: true, // When you have a touchable or clickable interface on your MM.
     detailTimeout : 1000*20, //Hide detail when this time passed after last action. `0` : never be timed out.
     telegramBotOrderOpenDetail : false, //When you use telegramBot, you might not need open detail iFrame on Mirror, because you can get detail link on Telegram.
+    readabilityExcepts: [],
 
     // You might not need modify belows;
     endpoint :  "https://newsapi.org/v2/top-headlines",
@@ -116,6 +129,17 @@ https://newsapi.org/
 },
 
 ```
+
+## Readability
+Now MMM-News can show article detail with `READER MODE`. Detailed article will be shown without Adv, menu or any other annoying site things.
+![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc7.png)
+But some articles cannot be shown as Reader mode. You can set exception with `readabilityExcepts`.
+```js
+readabilityExcepts: ["usatoday", "cnn.com", "wkrg"], //particle of URL pattern for exception
+
+```
+
+
 
 ## Template
 You can redesign output with `template.html`. Default is this;

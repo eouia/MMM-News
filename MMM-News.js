@@ -31,6 +31,8 @@ Module.register("MMM-News", {
     touchable: true,
     detailTimeout : 1000*20, //hide detail when this time passed after last action. `0` : never be timed out.
     telegramBotOrderOpenDetail : false, //When you use telegramBot, you might not need open detail iFrame on Mirror, because you can get detail link on Telegram.
+    readabilityExcepts: [],
+
 
     // You might not need modify belows;
     endpoint :  "https://newsapi.org/v2/top-headlines",
@@ -258,6 +260,13 @@ Module.register("MMM-News", {
         this.cl
       }, interval)
     }
+/*
+    iframe.onload = function () {
+        var body = iframe.contentWindow.document.querySelector('body')
+        body.style.fontSize = '40px'
+    };
+*/
+
     var cover = document.createElement("div")
     cover.id = "NEWS_DETAIL_COVER"
     var close = document.createElement("div")

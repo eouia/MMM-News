@@ -1,0 +1,26 @@
+{
+  "name": "MMM-News",
+  "version": "2.0.0",
+  "description": "MagicMirror module - displaying news articles with Newsapi.org API V2",
+  "main": "MMM-Spotify.js",
+  "keywords": [
+    "magic mirror",
+    "module",
+    "news",
+    "news.api"
+  ],
+  "author": "eouia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eouia/MMM-News/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eouia/MMM-News"
+  },
+  "homepage": "https://github.com/eouia/MMM-News",
+  "dependencies": {
+    "jsdom": "^14.0.0"
+  },
+  "devDependencies": {}
+}
