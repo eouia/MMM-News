@@ -116,13 +116,13 @@
 #NEWS .header .title {
   display:block;
   color:#FFF;
-  font-size:110%;
+  font-size:90%;
 
 }
 
 #NEWS .content {
   padding:10px;
-  font-size:90%;
+  font-size:70%;
 }
 
 #NEWS .content .articleImage {
@@ -135,7 +135,7 @@
 }
 #NEWS .footer .sourceName,
 #NEWS .footer .publishedAt {
-  font-size:90%;
+  font-size:60%;
   text-align:right;
   display:inline-block;
 }
@@ -163,8 +163,8 @@
 #NEWS.horizontal .content .articleImage {
   margin-right:10px;
   float:left;
-  max-width:20vw;
-  max-height:20vh;
+  max-width:10vw;
+  max-height:10vh;
 }
 
 

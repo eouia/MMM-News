@@ -59,7 +59,7 @@ Module.register("MMM-News", {
         command: 'news',
         args_pattern: ["n|p|c|u|d"],
         callback: 'telegramNews',
-        description: "See the github page. https://github.com/eouia/MMM-News"
+        description: "See the github page. https://github.com/bugsounet/MMM-News"
       }
     ]
   },
@@ -257,7 +257,7 @@ Module.register("MMM-News", {
     iframe.timer = null
     iframe.resetTimer = function(interval) {
       this.timer = setTimeout(()=>{
-        this.cl
+        this.closeMyself()
       }, interval)
     }
 /*
@@ -362,18 +362,18 @@ Module.register("MMM-News", {
 
   readTemplate: function() {
     var file = this.config.templateFile
-    var url = "/modules/MMM-News/" + file
+    var url = "modules/MMM-News/" + file
     var xmlHttp = new XMLHttpRequest()
     xmlHttp.onreadystatechange = () => {
       var res = []
       if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
         this.template = xmlHttp.responseText
-      } else if (xmlHttp.status !== 200) {
-        console.log("[NEWS] Template File - ", url , "seems to have some problem." )
+      } else if (xmlHttp.status !== 200 && xmlHttp.readyState !== 1) {
+        console.log("[NEWS] Template File - ", url , "seems to have some problem.", "("+xmlHttp.statusText+")")
       }
     }
     xmlHttp.open("GET", url, true)
-    xmlHttp.send(null)
+    xmlHttp.send()
   },
 
 
