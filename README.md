@@ -13,19 +13,24 @@ MagicMirror module - displaying news articles with News.org API V2
 
 ## Screenshot
 - `type:horizontal`, `touchable:true`
-![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc3.png)
+![Screenshot](https://raw.githubusercontent.com/bugsounet/MMM-News/master/sc3.png)
 
 - `type:vertical`, `touchable:false`
-![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc4.png)
+![Screenshot](https://raw.githubusercontent.com/bugsounet/MMM-News/master/sc4.png)
 
 - detail page is opened
-![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc5.png)
+![Screenshot](https://raw.githubusercontent.com/bugsounet/MMM-News/master/sc5.png)
 
 - Control by Telegram
-![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc6.png)
+![Screenshot](https://raw.githubusercontent.com/bugsounet/MMM-News/master/sc6.png)
 
 
 ## UPDATE
+
+**2.1.0** (Owner Change)
+- Fix: css
+- Fix: part of code missing
+
 **2.0.0**
 - Added : Reader mode
 - You need to re-install to update. or
@@ -39,7 +44,7 @@ npm install
 ## Installation
 ```javascript
 cd ~/MagicMirror/modules/
-git clone https://github.com/eouia/MMM-News
+git clone https://github.com/bugsounet/MMM-News
 cd MMM-News
 npm install
 ```
@@ -133,7 +138,7 @@ https://newsapi.org/
 ## Readability
 Now MMM-News can show article detail with `READER MODE`. Detailed article will be shown without Adv, menu or any other annoying site things.
 
-![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc7.png)
+![Screenshot](https://raw.githubusercontent.com/bugsounet/MMM-News/master/sc7.png)
 
 But some articles cannot be shown as Reader mode. You can set exception with `readabilityExcepts`.
 ```js
