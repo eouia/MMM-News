@@ -152,7 +152,7 @@
 /* Type: Horizontal */
 
 #NEWS.horizontal {
-  font-size:calc(2vw);
+  /* font-size:calc(2vw); */
   width:100%;
 }
 
