@@ -119,12 +119,11 @@ Module.register("MMM-News", {
     newsContent.id = "NEWS_CONTENT"
     wrapper.appendChild(newsContent)
     if (this.config.touchable == false) {
-      wrapper.className += " untouchable"
+      wrapper.classList.add("untouchable")
     } else {
-      var that = this
       wrapper.onclick = (event)=> {
         event.stopPropagation()
-        that.notificationReceived(that.config.notifications.showDetail)
+        this.notificationReceived(this.config.notifications.showDetail)
       }
       var newsTouch = document.createElement("div")
       newsTouch.id = "NEWS_TOUCH"
@@ -133,17 +132,17 @@ Module.register("MMM-News", {
       newsTouchPrevious.id = "NEWS_TOUCH_PREVIOUS"
       newsTouchPrevious.className = "touchable"
       newsTouchPrevious.innerHTML = "◀"
-      newsTouchPrevious.onclick = function(event) {
+      newsTouchPrevious.onclick = (event) => {
         event.stopPropagation()
-        that.notificationReceived(that.config.notifications.previousArticle)
+        this.notificationReceived(this.config.notifications.previousArticle)
       }
       var newsTouchNext = document.createElement("div")
       newsTouchNext.id = "NEWS_TOUCH_NEXT"
       newsTouchNext.className = "touchable"
       newsTouchNext.innerHTML = "▶"
-      newsTouchNext.onclick = function(event) {
+      newsTouchNext.onclick = (event)=> {
         event.stopPropagation()
-        that.notificationReceived(that.config.notifications.nextArticle)
+        this.notificationReceived(this.config.notifications.nextArticle)
       }
       newsTouch.appendChild(newsTouchPrevious)
       newsTouch.appendChild(newsTouchNext)

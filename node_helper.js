@@ -109,7 +109,7 @@ module.exports = NodeHelper.create({
 
   serveDetail: function() {
     this.expressApp.use(bodyParser.json())
-		this.expressApp.use(bodyParser.urlencoded({extended: true}))
+    this.expressApp.use(bodyParser.urlencoded({extended: true}))
     this.expressApp.get("/news_detail", (req, res) => {
       var html = this.detail
       res.status(200).send(html)
