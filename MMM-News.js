@@ -192,9 +192,6 @@ Module.register("MMM-News", {
       case this.config.notifications.scrollDownDetail:
         this.scrollDownDetail()
         break
-      case "NEWS_TELEGRAM":
-
-        break
     }
   },
 
@@ -230,41 +227,29 @@ Module.register("MMM-News", {
   },
 
   prepareDetail: function() {
-    var that = this
     var detail = document.createElement("div")
     if (this.config.touchable == false) {
-      detail.className += "untouchable"
+      detail.classList.add("untouchable")
     }
     detail.id = "NEWS_DETAIL"
     detail.style.display = "none"
     detail.timer = null
-    detail.resetTimer = function(interval) {
-      clearTimeout(this.timer)
-      this.timer = null
+    detail.resetTimer = (interval) => {
+      clearTimeout(detail.timer)
+      detail.timer = null
       if (interval > 0) {
-        this.timer = setTimeout(()=>{
-          this.closeMyself()
+        detail.timer = setTimeout(()=>{
+          this.closeDetail()
         }, interval)
       }
     }
-    detail.closeMyself = function() {
-      this.style.display = "none"
+    detail.closeMyself = () => {
+      detail.style.display = "none"
     }
+
     var iframe = document.createElement("iframe")
     iframe.id = "NEWS_DETAIL_IFRAME"
     iframe.dataset.yPos = 0
-    iframe.timer = null
-    iframe.resetTimer = function(interval) {
-      this.timer = setTimeout(()=>{
-        this.closeMyself()
-      }, interval)
-    }
-/*
-    iframe.onload = function () {
-        var body = iframe.contentWindow.document.querySelector('body')
-        body.style.fontSize = '40px'
-    };
-*/
 
     var cover = document.createElement("div")
     cover.id = "NEWS_DETAIL_COVER"
@@ -272,8 +257,8 @@ Module.register("MMM-News", {
     close.id = "NEWS_DETAIL_CLOSE"
     close.innerHTML = "X"
     close.className = "touchable"
-    close.onclick = function () {
-      that.notificationReceived(that.config.notifications.closeDetail)
+    close.onclick = () => {
+      this.notificationReceived(this.config.notifications.closeDetail)
     }
     var scroll = document.createElement("div")
     scroll.id = "NEWS_DETAIL_SCROLL"
@@ -281,15 +266,15 @@ Module.register("MMM-News", {
     up.id = "NEWS_DETAIL_SCROLLUP"
     up.innerHTML = "▲"
     up.className = "touchable"
-    up.onclick = function () {
-      that.notificationReceived(that.config.notifications.scrollUpDetail)
+    up.onclick = () => {
+      this.notificationReceived(this.config.notifications.scrollUpDetail)
     }
     var down = document.createElement("div")
     down.id = "NEWS_DETAIL_SCROLLDOWN"
     down.innerHTML = "▼"
     down.className = "touchable"
-    down.onclick = function () {
-      that.notificationReceived(that.config.notifications.scrollDownDetail)
+    down.onclick = () => {
+      this.notificationReceived(this.config.notifications.scrollDownDetail)
     }
     scroll.appendChild(up)
     scroll.appendChild(down)
@@ -305,7 +290,7 @@ Module.register("MMM-News", {
     detail.closeMyself()
     var iframe = document.getElementById("NEWS_DETAIL_IFRAME")
     iframe.dataset.yPos = 0
-    iframe.src = null
+    iframe.src= "about:blank"
   },
 
   scrollUpDetail: function() {
@@ -358,7 +343,6 @@ Module.register("MMM-News", {
     }
   },
 
-
   readTemplate: function() {
     var file = this.config.templateFile
     var url = "modules/MMM-News/" + file
@@ -400,7 +384,6 @@ Module.register("MMM-News", {
     template = template.replace("%CLASSNAME%", className)
 
     var news = document.getElementById("NEWS")
-
 
     var newsContent = document.getElementById("NEWS_CONTENT")
     news.classList.add("hideArticle")
