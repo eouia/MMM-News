@@ -43,6 +43,8 @@ module.exports = NodeHelper.create({
     this.queryItems = 0
     this.articles = []
     this.detail = ""
+    this.endpoint =  "https://newsapi.org/v2/top-headlines"
+    this.scanInterval = 1000*60*10
   },
 
   socketNotificationReceived: function(noti, payload) {
@@ -118,7 +120,7 @@ module.exports = NodeHelper.create({
   },
 
   prepareQuery: function() {
-    var url = this.config.endpoint + "?"
+    var url = this.endpoint + "?"
     var query = this.config.query
     for (i in query) {
       var q = query[i]
@@ -146,8 +148,8 @@ module.exports = NodeHelper.create({
     this.queryItems = this.pool.length
     var qc = Math.ceil(1000 / this.queryItems)
     var interval = Math.ceil(86400 * 1000 / qc) + 60000
-    if (interval > this.config.scanInterval) {
-      this.config.scanInterval = interval
+    if (interval > this.scanInterval) {
+      this.scanInterval = interval
     }
   },
 
@@ -242,7 +244,7 @@ module.exports = NodeHelper.create({
     }
     var timer = setTimeout(()=>{
       this.startPooling()
-    }, this.config.scanInterval)
+    }, this.scanInterval)
   },
 
   finishPooling: function() {

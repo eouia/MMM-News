@@ -28,78 +28,15 @@ Module.register("MMM-News", {
     autoScroll: false, // some site will not be displayed as normal when this is set as true. but normally, we have no interface to control the scroll of MM. Choice is yours.
     scrollStep: 100,
     scrollInterval: 1000,
-    touchable: true,
+    touchable: false,
     detailTimeout : 1000*20, //hide detail when this time passed after last action. `0` : never be timed out.
-    telegramBotOrderOpenDetail : false, //When you use telegramBot, you might not need open detail iFrame on Mirror, because you can get detail link on Telegram.
     readabilityExcepts: [],
 
-
-    // You might not need modify belows;
-    endpoint :  "https://newsapi.org/v2/top-headlines",
-    scanInterval: 1000*60*10, // This will be automatically recalculated by number of queries to avoid query quota limit. This could be minimum interval.
-    templateFile: "template.html",
-
-    notifications: {
-      previousArticle : "NEWS_PREVIOUS",
-      nextArticle : "NEWS_NEXT",
-      showDetail : "NEWS_DETAIL",
-      closeDetail : "NEWS_DETAIL_CLOSE",
-      scrollDownDetail : "NEWS_DETAIL_SCROLLDOWN",
-      scrollUpDetail : "NEWS_DETAIL_SCROLLUP"
-    },
+    templateFile: "template.html"
   },
 
   getStyles: function() {
     return ["MMM-News.css"]
-  },
-
-  getCommands: function(commander) {
-    return [
-      {
-        command: 'news',
-        args_pattern: ["n|p|c|u|d"],
-        callback: 'telegramNews',
-        description: "See the github page. https://github.com/bugsounet/MMM-News"
-      }
-    ]
-  },
-
-  telegramNews: function(command, handler) {
-    var c = (handler.args) ? handler.args[0] : "o"
-    switch (c) {
-      case "o":
-        if (this.config.telegramBotOrderOpenDetail) {
-          this.notificationReceived(this.config.notifications.showDetail)
-        }
-        var url = document.getElementById("NEWS").dataset.url
-        var title = document.getElementById("NEWS").dataset.title
-        var message = "[" + title + "](" + url + ")"
-        handler.reply("TEXT", message, {parse_mode:"Markdown"})
-        break
-      case "n":
-        this.notificationReceived(this.config.notifications.nextArticle)
-        handler.reply("TEXT", "Next topic will be shown.")
-        break
-      case "p":
-        this.notificationReceived(this.config.notifications.previousArticle)
-        handler.reply("TEXT", "Previous topic will be shown.")
-        break
-      case "c":
-        this.notificationReceived(this.config.notifications.closeDetail)
-        handler.reply("TEXT", "Detail iframe will be closed.")
-        break
-      case "u":
-        this.notificationReceived(this.config.notifications.scrollUpDetail)
-        handler.reply("TEXT", "It will be scrolled up.")
-        break
-      case "d":
-        this.notificationReceived(this.config.notifications.scrollDownDetail)
-        handler.reply("TEXT", "It will be scrolled down.")
-        break
-      default:
-        handler.reply("TEXT", "I cannot understand. Sorry.")
-        break
-    }
   },
 
   start: function() {
@@ -123,7 +60,7 @@ Module.register("MMM-News", {
     } else {
       wrapper.onclick = (event)=> {
         event.stopPropagation()
-        this.notificationReceived(this.config.notifications.showDetail)
+        this.notificationReceived("NEWS_DETAIL")
       }
       var newsTouch = document.createElement("div")
       newsTouch.id = "NEWS_TOUCH"
@@ -134,7 +71,7 @@ Module.register("MMM-News", {
       newsTouchPrevious.innerHTML = "◀"
       newsTouchPrevious.onclick = (event) => {
         event.stopPropagation()
-        this.notificationReceived(this.config.notifications.previousArticle)
+        this.notificationReceived("NEWS_PREVIOUS")
       }
       var newsTouchNext = document.createElement("div")
       newsTouchNext.id = "NEWS_TOUCH_NEXT"
@@ -142,7 +79,7 @@ Module.register("MMM-News", {
       newsTouchNext.innerHTML = "▶"
       newsTouchNext.onclick = (event)=> {
         event.stopPropagation()
-        this.notificationReceived(this.config.notifications.nextArticle)
+        this.notificationReceived("NEWS_NEXT")
       }
       newsTouch.appendChild(newsTouchPrevious)
       newsTouch.appendChild(newsTouchNext)
@@ -159,7 +96,7 @@ Module.register("MMM-News", {
         this.prepareDetail()
         this.sendSocketNotification("START")
         break
-      case this.config.notifications.previousArticle:
+      case "NEWS_PREVIOUS":
         if (this.index > 0) {
           this.index--
         } else {
@@ -167,7 +104,7 @@ Module.register("MMM-News", {
         }
         this.draw()
         break
-      case this.config.notifications.nextArticle:
+      case "NEWS_NEXT":
         if (this.index < this.articles.length - 1) {
           this.index++
         } else {
@@ -175,7 +112,7 @@ Module.register("MMM-News", {
         }
         this.draw()
         break
-      case this.config.notifications.showDetail:
+      case "NEWS_DETAIL":
         var url = document.getElementById("NEWS").dataset.url
         if (this.config.scrollDown == 0) {
           this.displayDetail(url)
@@ -183,13 +120,13 @@ Module.register("MMM-News", {
           this.sendSocketNotification("REQUEST_NEWS_DETAIL", url)
         }
         break
-      case this.config.notifications.closeDetail:
+      case "NEWS_DETAIL_CLOSE":
         this.closeDetail()
         break
-      case this.config.notifications.scrollUpDetail:
+      case "NEWS_DETAIL_SCROLLUP":
         this.scrollUpDetail()
         break
-      case this.config.notifications.scrollDownDetail:
+      case "NEWS_DETAIL_SCROLLDOWN":
         this.scrollDownDetail()
         break
     }
@@ -216,10 +153,7 @@ Module.register("MMM-News", {
     iframe.src = url
     if (this.config.autoScroll) {
       var interval = this.config.scrollInterval
-      var that = this
-      iframe.onload = function() {
-        that.autoScrollDown()
-      }
+      iframe.onload = () => this.autoScrollDown()
     }
     var detail = document.getElementById("NEWS_DETAIL")
     detail.style.display = "block"
@@ -258,7 +192,7 @@ Module.register("MMM-News", {
     close.innerHTML = "X"
     close.className = "touchable"
     close.onclick = () => {
-      this.notificationReceived(this.config.notifications.closeDetail)
+      this.notificationReceived("NEWS_DETAIL_CLOSE")
     }
     var scroll = document.createElement("div")
     scroll.id = "NEWS_DETAIL_SCROLL"
@@ -267,14 +201,14 @@ Module.register("MMM-News", {
     up.innerHTML = "▲"
     up.className = "touchable"
     up.onclick = () => {
-      this.notificationReceived(this.config.notifications.scrollUpDetail)
+      this.notificationReceived("NEWS_DETAIL_SCROLLUP")
     }
     var down = document.createElement("div")
     down.id = "NEWS_DETAIL_SCROLLDOWN"
     down.innerHTML = "▼"
     down.className = "touchable"
     down.onclick = () => {
-      this.notificationReceived(this.config.notifications.scrollDownDetail)
+      this.notificationReceived("NEWS_DETAIL_SCROLLDOWN")
     }
     scroll.appendChild(up)
     scroll.appendChild(down)
@@ -359,7 +293,6 @@ Module.register("MMM-News", {
     xmlHttp.send()
   },
 
-
   draw: function() {
     clearTimeout(this.timer)
     this.timer = null
@@ -403,7 +336,6 @@ Module.register("MMM-News", {
       newsContent.innerHTML = template
     }, 900)
 
-
     this.timer = setTimeout(()=>{
       this.index++
       if (this.index >= this.articles.length) {
@@ -412,4 +344,56 @@ Module.register("MMM-News", {
       this.draw()
     }, this.config.drawInterval)
   },
+
+  /** TelegramBot **/
+  getCommands: function(commander) {
+    return [
+      {
+        command: 'news',
+        args_pattern: ["o|n|p|c|u|d"],
+        callback: 'telegramNews',
+        description: "See the github page. https://github.com/bugsounet/MMM-News"
+      }
+    ]
+  },
+
+  telegramNews: function(command, handler) {
+    var c = (handler.args) ? handler.args[0] : "b"
+    console.log(handler.args, c)
+    switch (c) {
+      case "o":
+        this.notificationReceived("NEWS_DETAIL")
+        handler.reply("TEXT", "Detail iframe will be shown.")
+        break
+      case "b":
+        var url = document.getElementById("NEWS").dataset.url
+        var title = document.getElementById("NEWS").dataset.title
+        var message = "[" + title + "](" + url + ")"
+        handler.reply("TEXT", message, {parse_mode:"Markdown"})
+        break
+      case "n":
+        this.notificationReceived("NEWS_NEXT")
+        handler.reply("TEXT", "Next topic will be shown.")
+        break
+      case "p":
+        this.notificationReceived("NEWS_PREVIOUS")
+        handler.reply("TEXT", "Previous topic will be shown.")
+        break
+      case "c":
+        this.notificationReceived("NEWS_DETAIL_CLOSE")
+        handler.reply("TEXT", "Detail iframe will be closed.")
+        break
+      case "u":
+        this.notificationReceived("NEWS_DETAIL_SCROLLUP")
+        handler.reply("TEXT", "It will be scrolled up.")
+        break
+      case "d":
+        this.notificationReceived("NEWS_DETAIL_SCROLLDOWN")
+        handler.reply("TEXT", "It will be scrolled down.")
+        break
+      default:
+        handler.reply("TEXT", "I cannot understand. Sorry.")
+        break
+    }
+  }
 })
