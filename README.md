@@ -36,7 +36,6 @@ git pull
 npm install
 ```
 
-
 ## Installation
 ```javascript
 cd ~/MagicMirror/modules/
@@ -160,4 +159,4 @@ You can redesign output with `template.html`. Default is this;
 |---|---|
 |`NEWS_NEXT`| Next article |
 |`NEWS_PREVIOUS`| Previous article |
-|`NEWS_DETAIL`| Open detail iframe page of current news|
+|`NEWS_DETAIL`| Open detail iframe page of current news with [MMM-Assistant2Display](https://github.com/bugsounet/MMM-Assistant2Display)|
