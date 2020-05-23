@@ -2,7 +2,7 @@
   "name": "MMM-News",
   "version": "2.1.0",
   "description": "MagicMirror module - displaying news articles with Newsapi.org API V2",
-  "main": "MMM-Spotify.js",
+  "main": "MMM-News.js",
   "keywords": [
     "magic mirror",
     "module",
