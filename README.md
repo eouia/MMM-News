@@ -17,10 +17,6 @@ MagicMirror module - displaying news articles with News.org API V2
 - `type:vertical`, `touchable:false`
 ![Screenshot](https://raw.githubusercontent.com/bugsounet/MMM-News/master/sc4.png)
 
-- Control by Telegram
-![Screenshot](https://raw.githubusercontent.com/bugsounet/MMM-News/master/sc6.png)
-
-
 ## UPDATE
 
 **2.1.0** (Owner Change)
