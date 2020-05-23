@@ -21,9 +21,5 @@
     "type": "git",
     "url": "https://github.com/bugsounet/MMM-News"
   },
-  "homepage": "https://github.com/bugsounet/MMM-News",
-  "dependencies": {
-    "jsdom": "^14.0.0"
-  },
-  "devDependencies": {}
+  "homepage": "https://github.com/bugsounet/MMM-News"
 }

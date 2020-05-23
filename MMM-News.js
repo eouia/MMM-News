@@ -46,6 +46,8 @@ Module.register("MMM-News", {
     this.timer = null
     this.index = 0
     this.template = ""
+    this.A2D = false
+    this.scanConfig()
   },
 
   getDom: function() {
@@ -59,8 +61,10 @@ Module.register("MMM-News", {
       wrapper.classList.add("untouchable")
     } else {
       wrapper.onclick = (event)=> {
+        var url = wrapper.dataset.url
+        var title = wrapper.dataset.title
         event.stopPropagation()
-        this.notificationReceived("NEWS_DETAIL")
+        this.openNews(url,title)
       }
       var newsTouch = document.createElement("div")
       newsTouch.id = "NEWS_TOUCH"
@@ -93,7 +97,6 @@ Module.register("MMM-News", {
     switch (noti) {
       case "DOM_OBJECTS_CREATED":
         this.readTemplate()
-        this.prepareDetail()
         this.sendSocketNotification("START")
         break
       case "NEWS_PREVIOUS":
@@ -112,23 +115,6 @@ Module.register("MMM-News", {
         }
         this.draw()
         break
-      case "NEWS_DETAIL":
-        var url = document.getElementById("NEWS").dataset.url
-        if (this.config.scrollDown == 0) {
-          this.displayDetail(url)
-        } else {
-          this.sendSocketNotification("REQUEST_NEWS_DETAIL", url)
-        }
-        break
-      case "NEWS_DETAIL_CLOSE":
-        this.closeDetail()
-        break
-      case "NEWS_DETAIL_SCROLLUP":
-        this.scrollUpDetail()
-        break
-      case "NEWS_DETAIL_SCROLLDOWN":
-        this.scrollDownDetail()
-        break
     }
   },
 
@@ -142,138 +128,6 @@ Module.register("MMM-News", {
           this.draw()
         }
       }
-    }
-    if (noti == "READY_DETAIL") {
-      this.displayDetail(payload)
-    }
-  },
-
-  displayDetail: function(url) {
-    var iframe = document.getElementById("NEWS_DETAIL_IFRAME")
-    iframe.src = url
-    if (this.config.autoScroll) {
-      var interval = this.config.scrollInterval
-      iframe.onload = () => this.autoScrollDown()
-    }
-    var detail = document.getElementById("NEWS_DETAIL")
-    detail.style.display = "block"
-    detail.resetTimer(this.config.detailTimeout)
-  },
-
-  prepareDetail: function() {
-    var detail = document.createElement("div")
-    if (this.config.touchable == false) {
-      detail.classList.add("untouchable")
-    }
-    detail.id = "NEWS_DETAIL"
-    detail.style.display = "none"
-    detail.timer = null
-    detail.resetTimer = (interval) => {
-      clearTimeout(detail.timer)
-      detail.timer = null
-      if (interval > 0) {
-        detail.timer = setTimeout(()=>{
-          this.closeDetail()
-        }, interval)
-      }
-    }
-    detail.closeMyself = () => {
-      detail.style.display = "none"
-    }
-
-    var iframe = document.createElement("iframe")
-    iframe.id = "NEWS_DETAIL_IFRAME"
-    iframe.dataset.yPos = 0
-
-    var cover = document.createElement("div")
-    cover.id = "NEWS_DETAIL_COVER"
-    var close = document.createElement("div")
-    close.id = "NEWS_DETAIL_CLOSE"
-    close.innerHTML = "X"
-    close.className = "touchable"
-    close.onclick = () => {
-      this.notificationReceived("NEWS_DETAIL_CLOSE")
-    }
-    var scroll = document.createElement("div")
-    scroll.id = "NEWS_DETAIL_SCROLL"
-    var up = document.createElement("div")
-    up.id = "NEWS_DETAIL_SCROLLUP"
-    up.innerHTML = "▲"
-    up.className = "touchable"
-    up.onclick = () => {
-      this.notificationReceived("NEWS_DETAIL_SCROLLUP")
-    }
-    var down = document.createElement("div")
-    down.id = "NEWS_DETAIL_SCROLLDOWN"
-    down.innerHTML = "▼"
-    down.className = "touchable"
-    down.onclick = () => {
-      this.notificationReceived("NEWS_DETAIL_SCROLLDOWN")
-    }
-    scroll.appendChild(up)
-    scroll.appendChild(down)
-    cover.appendChild(close)
-    cover.appendChild(scroll)
-    detail.appendChild(iframe)
-    detail.appendChild(cover)
-    document.getElementsByTagName('body')[0].appendChild(detail)
-  },
-
-  closeDetail: function() {
-    var detail = document.getElementById("NEWS_DETAIL")
-    detail.closeMyself()
-    var iframe = document.getElementById("NEWS_DETAIL_IFRAME")
-    iframe.dataset.yPos = 0
-    iframe.src= "about:blank"
-  },
-
-  scrollUpDetail: function() {
-    var detail = document.getElementById("NEWS_DETAIL")
-    detail.resetTimer(this.config.detailTimeout)
-    var iframe = document.getElementById("NEWS_DETAIL_IFRAME")
-    var w = iframe.contentWindow
-    var d = w.document.getElementsByTagName('body')[0]
-    var cy = parseInt(iframe.dataset.yPos)
-    var ty = cy - this.config.scrollStep
-    if (ty < 0) {
-      ty = 0
-    } else {
-      ty = cy - this.config.scrollStep
-    }
-    w.scrollTo(0, ty)
-    iframe.dataset.yPos = ty
-    return ty
-  },
-
-  scrollDownDetail: function() {
-    var detail = document.getElementById("NEWS_DETAIL")
-    detail.resetTimer(this.config.detailTimeout)
-    var iframe = document.getElementById("NEWS_DETAIL_IFRAME")
-    var w = iframe.contentWindow
-    var d = w.document.getElementsByTagName('body')[0]
-    var my = d.scrollHeight
-    var cy = parseInt(iframe.dataset.yPos)
-    var ty = cy + this.config.scrollStep
-    if (ty > my) {
-      ty = my
-    } else {
-      ty = cy + this.config.scrollStep
-    }
-    w.scrollTo(0, ty)
-    iframe.dataset.yPos = ty
-    return ty
-  },
-
-  autoScrollDown: function() {
-    var iframe = document.getElementById("NEWS_DETAIL_IFRAME")
-    var w = iframe.contentWindow
-    var d = w.document.getElementsByTagName('body')[0]
-    var my = d.scrollHeight
-    var cy = this.scrollDownDetail()
-    if (cy < my) {
-      setTimeout(()=>{
-        this.autoScrollDown()
-      }, this.config.scrollInterval)
     }
   },
 
@@ -350,7 +204,7 @@ Module.register("MMM-News", {
     return [
       {
         command: 'news',
-        args_pattern: ["o|n|p|c|u|d"],
+        args_pattern: ["o|n|p"],
         callback: 'telegramNews',
         description: "See the github page. https://github.com/bugsounet/MMM-News"
       }
@@ -359,15 +213,16 @@ Module.register("MMM-News", {
 
   telegramNews: function(command, handler) {
     var c = (handler.args) ? handler.args[0] : "b"
-    console.log(handler.args, c)
+    var url = document.getElementById("NEWS").dataset.url
+    var title = document.getElementById("NEWS").dataset.title
+
     switch (c) {
       case "o":
-        this.notificationReceived("NEWS_DETAIL")
+        if (!this.A2D) return handler.reply("TEXT", "Detail needed MMM-Assistant2Display")
+        this.openNews(url,title)
         handler.reply("TEXT", "Detail iframe will be shown.")
         break
       case "b":
-        var url = document.getElementById("NEWS").dataset.url
-        var title = document.getElementById("NEWS").dataset.title
         var message = "[" + title + "](" + url + ")"
         handler.reply("TEXT", message, {parse_mode:"Markdown"})
         break
@@ -379,21 +234,31 @@ Module.register("MMM-News", {
         this.notificationReceived("NEWS_PREVIOUS")
         handler.reply("TEXT", "Previous topic will be shown.")
         break
-      case "c":
-        this.notificationReceived("NEWS_DETAIL_CLOSE")
-        handler.reply("TEXT", "Detail iframe will be closed.")
-        break
-      case "u":
-        this.notificationReceived("NEWS_DETAIL_SCROLLUP")
-        handler.reply("TEXT", "It will be scrolled up.")
-        break
-      case "d":
-        this.notificationReceived("NEWS_DETAIL_SCROLLDOWN")
-        handler.reply("TEXT", "It will be scrolled down.")
-        break
       default:
         handler.reply("TEXT", "I cannot understand. Sorry.")
         break
     }
+  },
+
+  openNews: function (url, title) {
+    if (url) {
+      var responseEmulate = {
+        "photos": [],
+        "urls": [],
+        "transcription": {},
+        "trysay": null,
+        "help": null
+      }
+      responseEmulate.urls[0] = url
+      responseEmulate.transcription.done = true
+      responseEmulate.transcription.transcription = "~News~ " + title
+      this.sendNotification("A2D", responseEmulate)
+    }
+  },
+
+  scanConfig: function () {
+    config.modules.find( name => {
+      if (name.module == 'MMM-Assistant2Display') return this.A2D = true
+    })
   }
 })
