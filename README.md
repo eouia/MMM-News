@@ -106,7 +106,7 @@ https://newsapi.org/
     items: 20, // number of how many headlines to get from each query. max 100
     timeFormat: "relative", // Or You can use "YYYY-MM-DD HH:mm:ss" format.
     drawInterval: 1000*30, // How long time each article will be shown.
-    touchable: true, // When you have a touchable or clickable interface on your MM.
+    touchable: false, // When you have a touchable or clickable interface on your MM.
     templateFile: "template.html",
   }
 },
