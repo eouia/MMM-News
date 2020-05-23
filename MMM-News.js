@@ -56,10 +56,8 @@ Module.register("MMM-News", {
       wrapper.classList.add("untouchable")
     } else {
       wrapper.onclick = (event)=> {
-        var url = wrapper.dataset.url
-        var title = wrapper.dataset.title
         event.stopPropagation()
-        this.openNews(url,title)
+        this.openNews()
       }
       var newsTouch = document.createElement("div")
       newsTouch.id = "NEWS_TOUCH"
@@ -92,6 +90,9 @@ Module.register("MMM-News", {
       case "DOM_OBJECTS_CREATED":
         this.readTemplate()
         this.sendSocketNotification("START")
+        break
+      case "NEWS_DETAIL":
+        this.openNews()
         break
       case "NEWS_PREVIOUS":
         if (this.index > 0) {
@@ -207,16 +208,15 @@ Module.register("MMM-News", {
 
   telegramNews: function(command, handler) {
     var c = (handler.args) ? handler.args[0] : "b"
-    var url = document.getElementById("NEWS").dataset.url
-    var title = document.getElementById("NEWS").dataset.title
-
     switch (c) {
       case "o":
         if (!this.A2D) return handler.reply("TEXT", "Detail needed MMM-Assistant2Display")
-        this.openNews(url,title)
+        this.openNews()
         handler.reply("TEXT", "Detail iframe will be shown.")
         break
       case "b":
+        var url = document.getElementById("NEWS").dataset.url
+        var title = document.getElementById("NEWS").dataset.title
         var message = "[" + title + "](" + url + ")"
         handler.reply("TEXT", message, {parse_mode:"Markdown"})
         break
@@ -236,7 +236,9 @@ Module.register("MMM-News", {
 
 /** A2D **/
 
-  openNews: function (url, title) {
+  openNews: function () {
+    var url = document.getElementById("NEWS").dataset.url
+    var title = document.getElementById("NEWS").dataset.title
     if (url) {
       var responseEmulate = {
         "photos": [],
