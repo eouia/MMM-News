@@ -28,7 +28,6 @@
   border-radius: 25px;
 }
 
-
 .touchable {
   width:40px;
   height:40px;
@@ -120,10 +119,9 @@
 }
 
 #NEWS.vertical #NEWS_CONTENT {
-  padding-bottom:40px;
+  padding-bottom:5px;
 }
 
 #NEWS.vertical #NEWS_TOUCH {
- /* bottom:0; */
   right:0;
 }
