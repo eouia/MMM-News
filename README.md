@@ -20,8 +20,9 @@ MagicMirror module - displaying news articles with News.org API V2
 ## UPDATE
 
 **2.1.0** (Owner Change)
-- Fix: css
-- Fix: part of code missing
+- Delete: `readability` and associed functions
+- Add: MMM-Assistant2Display Support
+- Fix: ... a lot of bugs ...
 
 **2.0.0**
 - Added : Reader mode
