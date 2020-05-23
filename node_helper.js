@@ -1,10 +1,6 @@
 const request = require("request")
 const moment = require("moment")
 const querystring = require("querystring")
-const bodyParser = require("body-parser")
-const readability = require("./readability/Readability.js")
-const jsdom = require("jsdom")
-const { JSDOM } = jsdom
 
 var NodeHelper = require("node_helper")
 
@@ -20,7 +16,6 @@ String.prototype.hashCode = function() {
   }
   return hash
 }
-
 
 function slugify(string) {
   const a = 'àáäâãåèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;'
@@ -39,10 +34,10 @@ module.exports = NodeHelper.create({
   start: function() {
     this.config = null
     this.pool = []
-    this.poolInterval = 0
     this.queryItems = 0
     this.articles = []
-    this.detail = ""
+    this.endpoint =  "https://newsapi.org/v2/top-headlines"
+    this.scanInterval = 1000*60*10
   },
 
   socketNotificationReceived: function(noti, payload) {
@@ -51,75 +46,17 @@ module.exports = NodeHelper.create({
       if (this.config.items > 100) {
         this.config.items = 100
       }
-      this.prepareQuery()
-      console.log("[NEWS] Initialized.")
+      this.initializeQuery()
     }
     if (noti == "START") {
       this.startPooling()
     }
-    if (noti == "REQUEST_NEWS_DETAIL") {
-      this.prepareURL(payload)
-    }
   },
 
-  prepareURL: function(url) {
-    var isExceptReadability = (u)=>{
-      var isExcept = this.config.readabilityExcepts.some((pattern)=>{
-        var r = u.search(pattern)
-        return (r >= 0) ? true : false
-      })
-      return isExcept
-    }
-    request({url: url, method: "GET"}, (error, response, body)=> {
-      if (error) {
-        console.log("[NEWS] Cannot open URL :", url)
-      } else {
-        //this.detail = body
-        var doc = new JSDOM(body)
-        var article = new readability(doc.window.document).parse()
-        var readmode = isExceptReadability(url)
-        if (article && !readmode) {
-          var pattern = /<a[^>]*>|<\/a>/ig
-          article.content = article.content.replace(pattern, "")
-
-          this.detail = `
-            <html>
-            <head>
-            <link rel="stylesheet" type="text/css" href="/modules/MMM-News/readermode.css">
-            </head>
-            <body>
-            <h1 class="readable_header">${article.title}</h1>
-            <div class="readable_content">
-              ${article.content}
-              <div>
-                -- End of article --
-              </div>
-            </div>
-            </body>
-            </html>
-          `
-        } else {
-          this.detail = body
-        }
-
-        this.serveDetail()
-      }
-    })
-  },
-
-  serveDetail: function() {
-    this.expressApp.use(bodyParser.json())
-		this.expressApp.use(bodyParser.urlencoded({extended: true}))
-    this.expressApp.get("/news_detail", (req, res) => {
-      var html = this.detail
-      res.status(200).send(html)
-    })
-    this.sendSocketNotification("READY_DETAIL", "/news_detail")
-  },
-
-  prepareQuery: function() {
-    var url = this.config.endpoint + "?"
+  initializeQuery: function() {
+    var url = this.endpoint + "?"
     var query = this.config.query
+    console.log("[NEWS] MMM-News Version:",  require('./package.json').version)
     for (i in query) {
       var q = query[i]
       var qs = {}
@@ -142,16 +79,8 @@ module.exports = NodeHelper.create({
       var qp = querystring.stringify(qs)
       this.pool.push({"url":url + qp, "query":q})
     }
-
-    this.queryItems = this.pool.length
-    var qc = Math.ceil(1000 / this.queryItems)
-    var interval = Math.ceil(86400 * 1000 / qc) + 60000
-    if (interval > this.config.scanInterval) {
-      this.config.scanInterval = interval
-    }
+    console.log("[NEWS] Initialized with", this.pool.length, "query")
   },
-
-
 
   startPooling: function() {
     var count = this.pool.length
@@ -242,14 +171,14 @@ module.exports = NodeHelper.create({
     }
     var timer = setTimeout(()=>{
       this.startPooling()
-    }, this.config.scanInterval)
+    }, this.scanInterval)
   },
 
   finishPooling: function() {
     this.articles.sort((a, b)=>{
       return (b._publishedAt - a._publishedAt)
     })
-    console.log("[NEWS] Articles are aggregated : ", this.articles.length)
+    if (this.config.debug) console.log("[NEWS] Articles are aggregated : ", this.articles.length)
     this.sendSocketNotification("UPDATE", this.articles)
   }
 })

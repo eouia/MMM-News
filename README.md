@@ -1,31 +1,29 @@
 # MMM-News
 MagicMirror module - displaying news articles with News.org API V2
 
-
 ## Features
 - Aggregate headlines from multiple sources at once.
 - Country specific, Category specific, Keyword specific news could be aggregated.
 - Touchable (Clickable) UI supported
-- Can open article page in iFrame and scrollable by touch or autoScroll
+- Can open article page in iFrame ([MMM-Assistant2Display](https://github.com/bugsounet/MMM-Assistant2Display) needed)
 - Controllable by notification
 - Controllable by MMM-TelegramBot
 - Customizable with Template
 
 ## Screenshot
 - `type:horizontal`, `touchable:true`
-![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc3.png)
+![Screenshot](https://raw.githubusercontent.com/bugsounet/MMM-News/master/sc3.png)
 
 - `type:vertical`, `touchable:false`
-![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc4.png)
-
-- detail page is opened
-![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc5.png)
-
-- Control by Telegram
-![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc6.png)
-
+![Screenshot](https://raw.githubusercontent.com/bugsounet/MMM-News/master/sc4.png)
 
 ## UPDATE
+
+**2.1.0** (Owner Change)
+- Delete: `readability` and associed functions
+- Add: MMM-Assistant2Display Support
+- Fix: ... a lot of bugs ...
+
 **2.0.0**
 - Added : Reader mode
 - You need to re-install to update. or
@@ -35,11 +33,10 @@ git pull
 npm install
 ```
 
-
 ## Installation
 ```javascript
 cd ~/MagicMirror/modules/
-git clone https://github.com/eouia/MMM-News
+git clone https://github.com/bugsounet/MMM-News
 cd MMM-News
 npm install
 ```
@@ -80,6 +77,7 @@ https://newsapi.org/
   module: "MMM-News",
   position: "bottom_bar",
   config: {
+    debug: false
     apiKey : "", // set your newsapi.org API Key
     type: "horizontal", // "horizontal", "vertical" You can make your own type with CSS class selector.
 
@@ -105,44 +103,12 @@ https://newsapi.org/
     items: 20, // number of how many headlines to get from each query. max 100
     timeFormat: "relative", // Or You can use "YYYY-MM-DD HH:mm:ss" format.
     drawInterval: 1000*30, // How long time each article will be shown.
-    autoScroll: false, // some site will not be displayed as normal when this is set as true. but normally, we have no interface to control the scroll of MM. Choice is yours.
-    scrollStep: 100,
-    scrollInterval: 1000,
-    touchable: true, // When you have a touchable or clickable interface on your MM.
-    detailTimeout : 1000*20, //Hide detail when this time passed after last action. `0` : never be timed out.
-    telegramBotOrderOpenDetail : false, //When you use telegramBot, you might not need open detail iFrame on Mirror, because you can get detail link on Telegram.
-    readabilityExcepts: [],
-
-    // You might not need modify belows;
-    endpoint :  "https://newsapi.org/v2/top-headlines",
-    scanInterval: 1000*60*10, // This will be automatically recalculated by number of queries to avoid query quota limit. This could be minimum interval.
+    touchable: false, // When you have a touchable or clickable interface on your MM.
     templateFile: "template.html",
-    notifications: {
-      previousArticle : "NEWS_PREVIOUS",
-      nextArticle : "NEWS_NEXT",
-      showDetail : "NEWS_DETAIL",
-      closeDetail : "NEWS_DETAIL_CLOSE",
-      scrollDownDetail : "NEWS_DETAIL_SCROLLDOWN",
-      scrollUpDetail : "NEWS_DETAIL_SCROLLUP"
-    },
   }
 },
 
 ```
-
-## Readability
-Now MMM-News can show article detail with `READER MODE`. Detailed article will be shown without Adv, menu or any other annoying site things.
-
-![Screenshot](https://raw.githubusercontent.com/eouia/MMM-News/master/sc7.png)
-
-But some articles cannot be shown as Reader mode. You can set exception with `readabilityExcepts`.
-```js
-readabilityExcepts: ["usatoday", "cnn.com", "wkrg"], //particle of URL pattern for exception
-
-```
-CSS is defined in `readermode.css`. You can redefine it in your `css/custom.css`.
-
-
 ## Template
 You can redesign output with `template.html`. Default is this;
 ```html
@@ -151,7 +117,6 @@ You can redesign output with `template.html`. Default is this;
     <div class="title">%TITLE%</div>
   </div>
   <div class="content">
-    <!-- <img src="%URLTOIMAGE%"/> -->
     %ARTICLEIMAGE%
     %DESCRIPTION%
   </div>
@@ -178,23 +143,17 @@ You can redesign output with `template.html`. Default is this;
 |%ARTICLEIMAGE%| `<img src="http://image.cnn.com/..."... >` | Ready-made image tag. |
 |%CLASSNAME%| `someClassName` | When you give `className` to `query`, that value will be used as this. |
 
-
 ## `MMM-TelegramBot` commands
 |command | Description |
 |---|---|
 |`/news`| Send current news link to Telegram.|
 |`/news n`| Next article |
 |`/news p`| Previous article |
-|`/news c`| Close detail iframe page |
-|`/news u`| Scroll Up detail iframe page |
-|`/news d`| Scroll Down detail iframe page |
+|`/news o`| Open current news link with [MMM-Assistant2Display](https://github.com/bugsounet/MMM-Assistant2Display) |
 
 ## Notification commands
 |notification | Description |
 |---|---|
 |`NEWS_NEXT`| Next article |
 |`NEWS_PREVIOUS`| Previous article |
-|`NEWS_DETAIL`| Open detail iframe page of current news|
-|`NEWS_DETAIL_CLOSE`| Close detail iframe page |
-|`NEWS_DETAIL_SCROLLUP`| Scroll Up detail iframe page |
-|`NEWS_DETAIL_SCROLLDOWN`| Scroll Down detail iframe page |
+|`NEWS_DETAIL`| Open detail iframe page of current news with [MMM-Assistant2Display](https://github.com/bugsounet/MMM-Assistant2Display)|
