@@ -17,7 +17,6 @@ String.prototype.hashCode = function() {
   return hash
 }
 
-
 function slugify(string) {
   const a = 'àáäâãåèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;'
   const b = 'aaaaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------'
@@ -47,17 +46,17 @@ module.exports = NodeHelper.create({
       if (this.config.items > 100) {
         this.config.items = 100
       }
-      this.prepareQuery()
-      console.log("[NEWS] Initialized.")
+      this.initializeQuery()
     }
     if (noti == "START") {
       this.startPooling()
     }
   },
 
-  prepareQuery: function() {
+  initializeQuery: function() {
     var url = this.endpoint + "?"
     var query = this.config.query
+    console.log("[NEWS] MMM-News Version:",  require('./package.json').version)
     for (i in query) {
       var q = query[i]
       var qs = {}
@@ -80,13 +79,7 @@ module.exports = NodeHelper.create({
       var qp = querystring.stringify(qs)
       this.pool.push({"url":url + qp, "query":q})
     }
-
-    this.queryItems = this.pool.length
-    var qc = Math.ceil(1000 / this.queryItems)
-    var interval = Math.ceil(86400 * 1000 / qc) + 60000
-    if (interval > this.scanInterval) {
-      this.scanInterval = interval
-    }
+    console.log("[NEWS] Initialized with", this.pool.length, "query")
   },
 
   startPooling: function() {
@@ -185,7 +178,7 @@ module.exports = NodeHelper.create({
     this.articles.sort((a, b)=>{
       return (b._publishedAt - a._publishedAt)
     })
-    console.log("[NEWS] Articles are aggregated : ", this.articles.length)
+    if (this.config.debug) console.log("[NEWS] Articles are aggregated : ", this.articles.length)
     this.sendSocketNotification("UPDATE", this.articles)
   }
 })

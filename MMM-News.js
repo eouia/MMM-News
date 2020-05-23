@@ -1,5 +1,6 @@
 Module.register("MMM-News", {
   defaults: {
+    debug: false,
     apiKey : "", // set your newsapi.org API Key
     type: "horizontal", // "horizontal", "vertical" You can make your own type with CSS class selector.
 
@@ -25,13 +26,7 @@ Module.register("MMM-News", {
     items: 20, // number of how many headlines to get from each query. max 100
     timeFormat: "relative", // Or You can use "YYYY-MM-DD HH:mm:ss" format.
     drawInterval: 1000*30, // How long time each article will be shown.
-    autoScroll: false, // some site will not be displayed as normal when this is set as true. but normally, we have no interface to control the scroll of MM. Choice is yours.
-    scrollStep: 100,
-    scrollInterval: 1000,
     touchable: false,
-    detailTimeout : 1000*20, //hide detail when this time passed after last action. `0` : never be timed out.
-    readabilityExcepts: [],
-
     templateFile: "template.html"
   },
 
@@ -89,7 +84,6 @@ Module.register("MMM-News", {
       newsTouch.appendChild(newsTouchNext)
       wrapper.appendChild(newsTouch)
     }
-
     return wrapper
   },
 
@@ -239,6 +233,8 @@ Module.register("MMM-News", {
         break
     }
   },
+
+/** A2D **/
 
   openNews: function (url, title) {
     if (url) {
