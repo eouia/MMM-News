@@ -19,6 +19,9 @@ MagicMirror module - displaying news articles with News.org API V2
 
 ## UPDATE
 
+**2.1.1**
+- Fix: don't scan A2D (considered installed)
+
 **2.1.0** (Owner Change)
 - Delete: `readability` and associed functions
 - Add: MMM-Assistant2Display Support

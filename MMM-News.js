@@ -41,8 +41,6 @@ Module.register("MMM-News", {
     this.timer = null
     this.index = 0
     this.template = ""
-    this.A2D = false
-    this.scanConfig()
   },
 
   getDom: function() {
@@ -210,7 +208,6 @@ Module.register("MMM-News", {
     var c = (handler.args) ? handler.args[0] : "b"
     switch (c) {
       case "o":
-        if (!this.A2D) return handler.reply("TEXT", "Detail needed MMM-Assistant2Display")
         this.openNews()
         handler.reply("TEXT", "Detail iframe will be shown.")
         break
@@ -253,10 +250,4 @@ Module.register("MMM-News", {
       this.sendNotification("A2D", responseEmulate)
     }
   },
-
-  scanConfig: function () {
-    config.modules.find( name => {
-      if (name.module == 'MMM-Assistant2Display') return this.A2D = true
-    })
-  }
 })
