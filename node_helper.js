@@ -6,9 +6,7 @@ var NodeHelper = require("node_helper")
 
 String.prototype.hashCode = function() {
   var hash = 0
-  if (this.length == 0) {
-    return hash
-  }
+  if (this.length == 0) return hash
   for (var i = 0; i < this.length; i++) {
     var char = this.charCodeAt(i)
     hash = ((hash<<5)-hash)+char
@@ -36,25 +34,19 @@ module.exports = NodeHelper.create({
     this.pool = []
     this.queryItems = 0
     this.articles = []
-    this.endpoint =  "https://newsapi.org/v2/top-headlines"
-    this.scanInterval = 1000*60*10
+    this.endpoint =  "https://newsapi.org/v2/top-headlines?"
   },
 
   socketNotificationReceived: function(noti, payload) {
     if (noti == "INIT") {
       this.config = payload
-      if (this.config.items > 100) {
-        this.config.items = 100
-      }
+      if (this.config.items > 100) this.config.items = 100
       this.initializeQuery()
     }
-    if (noti == "START") {
-      this.startPooling()
-    }
+    if (noti == "START") this.startPooling()
   },
 
   initializeQuery: function() {
-    var url = this.endpoint + "?"
     var query = this.config.query
     console.log("[NEWS] MMM-News Version:",  require('./package.json').version)
     for (i in query) {
@@ -64,20 +56,14 @@ module.exports = NodeHelper.create({
         var t = q["sources"].replace(/\s/g, "")
         qs = Object.assign({}, qs, {"sources":t})
       } else {
-        if (q.hasOwnProperty("country")) {
-          qs = Object.assign({}, qs, {"country":q["country"]})
-        }
-        if (q.hasOwnProperty("category")) {
-          qs = Object.assign({}, qs, {"category":q["category"]})
-        }
+        if (q.hasOwnProperty("country")) qs = Object.assign({}, qs, {"country":q["country"]})
+        if (q.hasOwnProperty("category")) qs = Object.assign({}, qs, {"category":q["category"]})
       }
-      if (q.hasOwnProperty("q")) {
-        qs = Object.assign({}, qs, {"q":q["q"]})
-      }
+      if (q.hasOwnProperty("q")) qs = Object.assign({}, qs, {"q":q["q"]})
       qs = Object.assign({}, qs, {"pageSize":this.config.items})
       qs = Object.assign({}, qs, {"apiKey":this.config.apiKey})
       var qp = querystring.stringify(qs)
-      this.pool.push({"url":url + qp, "query":q})
+      this.pool.push({"url":this.endpoint + qp, "query":q})
     }
     console.log("[NEWS] Initialized with", this.pool.length, "query")
   },
@@ -89,31 +75,21 @@ module.exports = NodeHelper.create({
       for (j in result.articles) {
         var article = result.articles[j]
         var time = moment(article.publishedAt)
-        if (config.timeFormat == "relative") {
-          article.publishedAt = time.fromNow()
-        } else {
-          article.publishedAt = time.format(config.timeFormat)
-        }
+        if (config.timeFormat == "relative") article.publishedAt = time.fromNow()
+        else article.publishedAt = time.format(config.timeFormat)
 
         article._publishedAt = time.format("X")
 
         var hashId = "X" + article.url.hashCode()
         article.articleId = hashId
-        if (article.source.id) {
-          article.sourceId = article.source.id
-        } else {
-          article.sourceId = slugify(article.source.name)
-        }
+        if (article.source.id) article.sourceId = article.source.id
+        else article.sourceId = slugify(article.source.name)
 
         article.sourceName = article.source.name
 
-        if (!article.content) {
-          article.content = ""
-        }
+        if (!article.content) article.content = ""
 
-        if (!article.description) {
-          article.description = article.content
-        }
+        if (!article.description) article.description = article.content
 
         article.query = query
         ret.push(article)
@@ -144,9 +120,7 @@ module.exports = NodeHelper.create({
       try {
         var ret = await getRequest(url, query, cfg)
         var result = cb (ret, cfg, query)
-        if (result.length > 0) {
-          this.articles = this.articles.concat(result)
-        }
+        if (result.length > 0) this.articles = this.articles.concat(result)
         count--
         if (count <= 0) {
           count = this.pool.length
@@ -171,7 +145,7 @@ module.exports = NodeHelper.create({
     }
     var timer = setTimeout(()=>{
       this.startPooling()
-    }, this.scanInterval)
+    }, this.config.scanInterval)
   },
 
   finishPooling: function() {

@@ -19,6 +19,10 @@ MagicMirror module - displaying news articles with News.org API V2
 
 ## UPDATE
 
+**2.1.2**
+- Cleaning
+- Fix: Delay before rescan news (limited to 100 query by day and 50 query for 12 hours)
+
 **2.1.1**
 - Fix: don't scan A2D (considered installed)
 
@@ -106,8 +110,9 @@ https://newsapi.org/
     items: 20, // number of how many headlines to get from each query. max 100
     timeFormat: "relative", // Or You can use "YYYY-MM-DD HH:mm:ss" format.
     drawInterval: 1000*30, // How long time each article will be shown.
+    scanInterval: 1000*60*30, // Delay before rescan news (limited to 100 query by day and 50 query for 12 hours)
     touchable: false, // When you have a touchable or clickable interface on your MM.
-    templateFile: "template.html",
+    templateFile: "template.html"
   }
 },
 

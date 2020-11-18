@@ -26,6 +26,7 @@ Module.register("MMM-News", {
     items: 20, // number of how many headlines to get from each query. max 100
     timeFormat: "relative", // Or You can use "YYYY-MM-DD HH:mm:ss" format.
     drawInterval: 1000*30, // How long time each article will be shown.
+    scanInterval: 1000*60*30, // Delay before rescan news (limited to 100 query by day and 50 query for 12 hours)
     touchable: false,
     templateFile: "template.html"
   },
@@ -50,9 +51,8 @@ Module.register("MMM-News", {
     var newsContent = document.createElement("div")
     newsContent.id = "NEWS_CONTENT"
     wrapper.appendChild(newsContent)
-    if (this.config.touchable == false) {
-      wrapper.classList.add("untouchable")
-    } else {
+    if (this.config.touchable == false) wrapper.classList.add("untouchable")
+    else {
       wrapper.onclick = (event)=> {
         event.stopPropagation()
         this.openNews()
@@ -93,33 +93,26 @@ Module.register("MMM-News", {
         this.openNews()
         break
       case "NEWS_PREVIOUS":
-        if (this.index > 0) {
-          this.index--
-        } else {
-          this.index = this.articles.length - 1
-        }
+        if (this.index > 0) this.index--
+        else this.index = this.articles.length - 1
         this.draw()
         break
       case "NEWS_NEXT":
-        if (this.index < this.articles.length - 1) {
-          this.index++
-        } else {
-          this.index = 0
-        }
+        if (this.index < this.articles.length - 1) this.index++
+        else this.index = 0
         this.draw()
         break
     }
   },
 
   socketNotificationReceived: function(noti, payload) {
-    if (noti == "UPDATE") {
-      if (payload.length > 0) {
-        this.articles = payload
-        if (this.firstUpdate == 0) {
-          this.firstUpdate = 1
-          this.index = 0
-          this.draw()
-        }
+    if (noti == "UPDATE" && payload.length > 0) {
+      this.articles = payload
+      if (this.config.debug) console.log("[NEWS] Articles", this.articles)
+      if (this.firstUpdate == 0) {
+        this.firstUpdate = 1
+        this.index = 0
+        this.draw()
       }
     }
   },
@@ -130,9 +123,8 @@ Module.register("MMM-News", {
     var xmlHttp = new XMLHttpRequest()
     xmlHttp.onreadystatechange = () => {
       var res = []
-      if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-        this.template = xmlHttp.responseText
-      } else if (xmlHttp.status !== 200 && xmlHttp.readyState !== 1) {
+      if (xmlHttp.readyState == 4 && xmlHttp.status == 200) this.template = xmlHttp.responseText
+      else if (xmlHttp.status !== 200 && xmlHttp.readyState !== 1) {
         console.log("[NEWS] Template File - ", url , "seems to have some problem.", "("+xmlHttp.statusText+")")
       }
     }
@@ -155,10 +147,7 @@ Module.register("MMM-News", {
       var tu = "%" + t.toUpperCase() + "%"
       template = template.replace(tu, article[t])
     }
-    var imgtag
-      = (article.urlToImage)
-      ? `<img class="articleImage" src="` + article.urlToImage+ `"/>`
-      : ""
+    var imgtag = (article.urlToImage) ? `<img class="articleImage" src="` + article.urlToImage+ `"/>` : ""
     template = template.replace("%ARTICLEIMAGE%", imgtag)
     var className = (article.query.className) ? article.query.className : ""
     template = template.replace("%CLASSNAME%", className)
@@ -168,9 +157,7 @@ Module.register("MMM-News", {
     var newsContent = document.getElementById("NEWS_CONTENT")
     news.classList.add("hideArticle")
     news.classList.remove("showArticle")
-    for (j in article) {
-      news.dataset[j] = article[j]
-    }
+    for (j in article) news.dataset[j] = article[j]
 
     setTimeout(()=>{
       newsContent.innerHTML = ""
@@ -185,9 +172,7 @@ Module.register("MMM-News", {
 
     this.timer = setTimeout(()=>{
       this.index++
-      if (this.index >= this.articles.length) {
-        this.index = 0
-      }
+      if (this.index >= this.articles.length) this.index = 0
       this.draw()
     }, this.config.drawInterval)
   },
@@ -232,7 +217,6 @@ Module.register("MMM-News", {
   },
 
 /** A2D **/
-
   openNews: function () {
     var url = document.getElementById("NEWS").dataset.url
     var title = document.getElementById("NEWS").dataset.title
