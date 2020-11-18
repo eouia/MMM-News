@@ -1,6 +1,6 @@
 {
   "name": "MMM-News",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "MagicMirror module - displaying news articles with Newsapi.org API V2",
   "main": "MMM-News.js",
   "keywords": [
