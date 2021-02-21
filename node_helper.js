@@ -49,6 +49,10 @@ module.exports = NodeHelper.create({
   initializeQuery: function() {
     var query = this.config.query
     console.log("[NEWS] MMM-News Version:",  require('./package.json').version)
+    console.log("[NEWS] WARNING")
+    console.log("[NEWS] MMM-News search a new owner !")
+    console.log("[NEWS] Contact @bugsounet in forum -- http://forum.bugsounet.fr --")
+    console.log("[NEWS] MMM-News will be in end of life in april 2021 ! (not maintened)")
     for (i in query) {
       var q = query[i]
       var qs = {}
