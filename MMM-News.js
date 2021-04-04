@@ -88,6 +88,12 @@ Module.register("MMM-News", {
       case "DOM_OBJECTS_CREATED":
         this.readTemplate()
         this.sendSocketNotification("START")
+        this.sendNotification("SHOW_ALERT", {
+          type: "notification" ,
+          message: "Attention: This module will be deprecied and going down at 2021-05-01",
+          title: "MMM-News",
+          timer: 60*1000
+        })
         break
       case "NEWS_DETAIL":
         this.openNews()
