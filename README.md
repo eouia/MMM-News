@@ -6,7 +6,7 @@ MagicMirror module - displaying news articles with News.org API V2
  * You have some idea for new cool features ?
  * Contact @bugsounet on [the 4th Party Modules Forum](http://forum.bugsounet.fr)
  * MMM-News is now in end of life !
- * This module will going down at 2021-05-01
+ * This module is now archived
 
 ## Features
 - Aggregate headlines from multiple sources at once.
