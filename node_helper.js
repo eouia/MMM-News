@@ -37,15 +37,6 @@ module.exports = NodeHelper.create({
     this.endpoint =  "https://newsapi.org/v2/top-headlines?"
   },
 
-  socketNotificationReceived: function(noti, payload) {
-    if (noti == "INIT") {
-      this.config = payload
-      if (this.config.items > 100) this.config.items = 100
-      this.initializeQuery()
-    }
-    if (noti == "START") this.startPooling()
-  },
-
   initializeQuery: function() {
     var query = this.config.query
     console.log("[NEWS] MMM-News Version:",  require('./package.json').version)
