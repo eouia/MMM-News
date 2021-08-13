@@ -37,15 +37,6 @@ module.exports = NodeHelper.create({
     this.endpoint =  "https://newsapi.org/v2/top-headlines?"
   },
 
-  socketNotificationReceived: function(noti, payload) {
-    if (noti == "INIT") {
-      this.config = payload
-      if (this.config.items > 100) this.config.items = 100
-      this.initializeQuery()
-    }
-    if (noti == "START") this.startPooling()
-  },
-
   initializeQuery: function() {
     var query = this.config.query
     console.log("[NEWS] MMM-News Version:",  require('./package.json').version)
@@ -53,7 +44,6 @@ module.exports = NodeHelper.create({
     console.error("[NEWS] MMM-News search a new owner !")
     console.error("[NEWS] Contact @bugsounet in forum -- http://forum.bugsounet.fr --")
     console.error("[NEWS] MMM-News is now in end of life !")
-    console.error("[NEWS] This module will going down at 2021-05-01")
     for (i in query) {
       var q = query[i]
       var qs = {}
