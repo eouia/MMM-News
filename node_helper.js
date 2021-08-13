@@ -36,6 +36,17 @@ module.exports = NodeHelper.create({
     this.articles = []
     this.endpoint =  "https://newsapi.org/v2/top-headlines?"
   },
+ 
+  /* uncomment this for working module @bugsounet
+  socketNotificationReceived: function(noti, payload) {
+    if (noti == "INIT") {
+      this.config = payload
+      if (this.config.items > 100) this.config.items = 100
+      this.initializeQuery()
+    }
+    if (noti == "START") this.startPooling()
+  },
+  */
 
   initializeQuery: function() {
     var query = this.config.query
