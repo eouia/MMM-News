@@ -37,7 +37,7 @@ module.exports = NodeHelper.create({
     this.endpoint =  "https://newsapi.org/v2/top-headlines?"
   },
  
-  /* uncomment this for working module @bugsounet
+  // uncomment this for working module @bugsounet
   socketNotificationReceived: function(noti, payload) {
     if (noti == "INIT") {
       this.config = payload
@@ -46,15 +46,14 @@ module.exports = NodeHelper.create({
     }
     if (noti == "START") this.startPooling()
   },
-  */
 
   initializeQuery: function() {
     var query = this.config.query
     console.log("[NEWS] MMM-News Version:",  require('./package.json').version)
-    console.error("[NEWS] WARNING")
-    console.error("[NEWS] MMM-News search a new owner !")
-    console.error("[NEWS] Contact @bugsounet in forum -- http://forum.bugsounet.fr --")
-    console.error("[NEWS] MMM-News is now in end of life !")
+    // console.error("[NEWS] WARNING")
+    // console.error("[NEWS] MMM-News search a new owner !")
+    // console.error("[NEWS] Contact @bugsounet in forum -- http://forum.bugsounet.fr --")
+    // console.error("[NEWS] MMM-News is now in end of life !")
     for (i in query) {
       var q = query[i]
       var qs = {}

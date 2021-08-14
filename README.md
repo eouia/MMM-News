@@ -14,10 +14,10 @@ MagicMirror module - displaying news articles with News.org API V2
 
 ## Screenshot
 - `type:horizontal`, `touchable:true`
-![Screenshot](https://raw.githubusercontent.com/bugsounet/MMM-News/master/sc3.png)
+![Screenshot](sc3.png)
 
 - `type:vertical`, `touchable:false`
-![Screenshot](https://raw.githubusercontent.com/bugsounet/MMM-News/master/sc4.png)
+![Screenshot](sc4.png)
 
 ## UPDATE
 
@@ -45,7 +45,7 @@ npm install
 ## Installation
 ```javascript
 cd ~/MagicMirror/modules/
-git clone https://github.com/bugsounet/MMM-News
+git clone https://github.com/mumblebaj/MMM-News.git
 cd MMM-News
 npm install
 ```
