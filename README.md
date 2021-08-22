@@ -1,8 +1,6 @@
 # MMM-News
 MagicMirror module - displaying news articles with News.org API V2
 
-# This module is now offer to @mumblebaj with pleasure ;)
-
 ## Features
 - Aggregate headlines from multiple sources at once.
 - Country specific, Category specific, Keyword specific news could be aggregated.
