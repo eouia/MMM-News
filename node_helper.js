@@ -131,7 +131,7 @@ module.exports = NodeHelper.create({
 
     var getArticles = async (url, query, cfg) => {
       try {
-        var ret = await getRequest(url, query, cfg)
+        var ret = await requestData(url, query, cfg)
         var result = cb (ret, cfg, query)
         if (result.length > 0) this.articles = this.articles.concat(result)
         count--
