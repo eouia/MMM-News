@@ -1,8 +1,10 @@
-const request = require("request")
+const fetch = require("node-fetch")
 const moment = require("moment")
 const querystring = require("querystring")
 
 var NodeHelper = require("node_helper")
+const { getHeapCodeStatistics } = require("v8")
+const { resolve } = require("path")
 
 String.prototype.hashCode = function() {
   var hash = 0
@@ -50,10 +52,6 @@ module.exports = NodeHelper.create({
   initializeQuery: function() {
     var query = this.config.query
     console.log("[NEWS] MMM-News Version:",  require('./package.json').version)
-    // console.error("[NEWS] WARNING")
-    // console.error("[NEWS] MMM-News search a new owner !")
-    // console.error("[NEWS] Contact @bugsounet in forum -- http://forum.bugsounet.fr --")
-    // console.error("[NEWS] MMM-News is now in end of life !")
     for (i in query) {
       var q = query[i]
       var qs = {}
@@ -102,23 +100,33 @@ module.exports = NodeHelper.create({
       return ret
     }
 
-    var getRequest = function(url, query, cfg) {
-      return new Promise((resolve, reject)=>{
-        request(url, (error, response, body)=> {
-          if (error) {
-            var e = ""
-            reject(e)
-          } else {
-            var result = JSON.parse(body)
-            if (result.status == "error") {
-              var e = "result.code" + ":" + result.message
-              reject(e)
-            } else {
-              resolve(result)
-            }
-          }
-        })
-      })
+    // var getRequest = function(url, query, cfg) {
+    //   return new Promise((resolve, reject)=>{
+    //     request(url, (error, response, body)=> {
+    //       if (error) {
+    //         var e = ""
+    //         reject(e)
+    //       } else {
+    //         var result = JSON.parse(body)
+    //         if (result.status == "error") {
+    //           var e = "result.code" + ":" + result.message
+    //           reject(e)
+    //         } else {
+    //           resolve(result)
+    //         }
+    //       }
+    //     })
+    //   })
+    // }
+
+    var requestData = async function(url, query, cfg) {
+      var response = await fetch(url)
+      if(!response.status == 200) {
+        console.error(`Error retrieving data: ${response.statusCode} ${response.statusText}`)
+        return;
+      }
+      var result = await response.json()
+      return(result)
     }
 
     var getArticles = async (url, query, cfg) => {
