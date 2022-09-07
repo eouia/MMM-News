@@ -8,7 +8,7 @@ const { resolve } = require("path")
 
 String.prototype.hashCode = function() {
   var hash = 0
-  if (this.length == 0) return hash
+  if (this.length == 0) return hash128
   for (var i = 0; i < this.length; i++) {
     var char = this.charCodeAt(i)
     hash = ((hash<<5)-hash)+char
@@ -120,25 +120,33 @@ module.exports = NodeHelper.create({
     // }
 
     var requestData = async function(url, query, cfg) {
+      let self = this
       var response = await fetch(url)
       if(!response.status == 200) {
         console.error(`Error retrieving data: ${response.statusCode} ${response.statusText}`)
         return;
       }
       var result = await response.json()
-      return(result)
+      if(result.status==='ok')
+         return(result)
+      else{
+         console.log(self.name+" fetch result=",result)
+         return null
+      }
     }
 
     var getArticles = async (url, query, cfg) => {
       try {
         var ret = await requestData(url, query, cfg)
-        var result = cb (ret, cfg, query)
-        if (result.length > 0) this.articles = this.articles.concat(result)
-        count--
-        if (count <= 0) {
-          count = this.pool.length
-          this.finishPooling()
-          return true
+        if(ret){
+          var result = cb (ret, cfg, query)
+          if (result.length > 0) this.articles = this.articles.concat(result)
+          count--
+          if (count <= 0) {
+            count = this.pool.length
+            this.finishPooling()
+            return true
+          }
         }
         return false
       } catch (error) {
